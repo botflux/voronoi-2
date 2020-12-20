@@ -44,7 +44,7 @@ public:
     }
 };
 
-tuple<unsigned long, unsigned long> brutVoronoi (Mat & source, vector<Germ> germs, DistanceCalculator & distanceCalculator) {
+tuple<unsigned long, unsigned long> brutVoronoi (Mat & source, vector<Germ> germs, DistanceCalculator & distanceCalculator, map<int, vector<Point>> & regions) {
     unsigned long iterationCount = 0;
     auto start = high_resolution_clock::now();
 
@@ -65,6 +65,9 @@ tuple<unsigned long, unsigned long> brutVoronoi (Mat & source, vector<Germ> germ
             }
 
             source.at<ushort>(currentPoint) = (ushort) foundGerm.getId();
+            auto region = regions[foundGerm.getId()];
+            region.push_back(currentPoint);
+            regions[foundGerm.getId()] = region;
         }
     }
 

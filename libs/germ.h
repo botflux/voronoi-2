@@ -34,13 +34,30 @@ public:
     }
 };
 
+class GermRegion {
+private:
+    vector<Point> points;
+    Germ origin;
+public:
+    GermRegion(Germ origin): origin(origin), points(vector<Point>()) {}
+    void addPoint (Point point) {
+        points.push_back(point);
+    }
+    Germ getOrigin () {
+        return origin;
+    }
+    vector<Point> getPoints () {
+        return points;
+    }
+};
+
 class GermFactory {
 private:
     int lastGermId;
 
 public:
     GermFactory(): lastGermId (0) {}
-    vector<Germ> createRandomGerm (Mat & mat, int germCount) {
+    vector<Germ> createRandomGerms (Mat & mat, int germCount) {
         vector<Germ> germs;
 
         for (int i = 0; i < germCount; ++i) {

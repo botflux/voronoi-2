@@ -1,7 +1,6 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include "libs/brut-voronoi.h"
-#include "libs/generate-germs.h"
 #include "deps/argparse.h"
 #include "libs/image-approximation.h"
 #include "libs/germ.h"
@@ -41,19 +40,25 @@ int main (int argc, char * argv []) {
     auto germCount = program.get<int>("--germs");
 
     Mat sourceImage = imread(inputFilePath, IMREAD_GRAYSCALE);
-    Mat voronoi(sourceImage.rows, sourceImage.cols, CV_8UC3);
+    Mat voronoi(sourceImage.rows, sourceImage.cols, CV_16UC1);
     auto germFactory = GermFactory();
-    auto germs = germFactory.createRandomGerm(voronoi, germCount);
+    auto germs = germFactory.createRandomGerms(voronoi, germCount);
     DeDistanceCalculator distanceCalculator;
-    brutVoronoi(voronoi, germs, distanceCalculator);
+    map<int, vector<Point>> regions;
+    brutVoronoi(voronoi, germs, distanceCalculator, regions);
     Mat outputImage(voronoi.rows, voronoi.cols, CV_8UC1);
 
-    brutImageApproximation(sourceImage, voronoi, outputImage, germs);
+    brutImageApproximation(sourceImage, voronoi, outputImage, germs, regions);
+
 
     if (program["--preview-image"] == true) {
         namedWindow("result", WINDOW_AUTOSIZE);
         imshow("result", outputImage);
         waitKey(0);
+    }
+
+    if (program.present("--output")) {
+        imwrite(program.get<string>("--output"), outputImage);
     }
 
     return 0;

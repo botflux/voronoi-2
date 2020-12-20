@@ -48,10 +48,11 @@ int main(int argc, char * argv[]) {
 
     Mat voronoi (height, width, CV_16UC1);
     auto germFactory = GermFactory();
-    auto germs = germFactory.createRandomGerm(voronoi, germCount);
+    auto germs = germFactory.createRandomGerms(voronoi, germCount);
 
     auto distanceCalculator = DeDistanceCalculator();
-    auto report = brutVoronoi(voronoi, germs, distanceCalculator);
+    auto regions = map<int, vector<Point>> ();
+    auto report = brutVoronoi(voronoi, germs, distanceCalculator, regions);
     Mat voronoiWithColorsApplied(voronoi.rows, voronoi.cols, CV_8UC3);
     applyColorsOnVoronoi(voronoi, voronoiWithColorsApplied, germs);
 
@@ -62,7 +63,7 @@ int main(int argc, char * argv[]) {
     }
 
     if (program.present("--output")) {
-        imwrite(program.get<string>("--output"), voronoi);
+        imwrite(program.get<string>("--output"), voronoiWithColorsApplied);
     }
 
     cout << to_string(get<0>(report)) << " iterations in " << to_string(get<1>(report)) << "s";

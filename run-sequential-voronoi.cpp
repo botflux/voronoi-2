@@ -3,6 +3,7 @@
 #include "deps/argparse.h"
 #include "libs/sequential-voronoi.h"
 #include "libs/germ.h"
+#include "libs/apply-colors-on-voronoi.h"
 
 using namespace cv;
 using namespace std;
@@ -45,19 +46,21 @@ int main (int argc, char * argv[]) {
     auto height = program.get<int>("--height");
     auto germCount = program.get<int>("--germs");
 
-    Mat mat (height, width, CV_8UC3);
+    Mat voronoi (height, width, CV_16UC1);
     auto germFactory = GermFactory();
-    auto germs = germFactory.createRandomGerm(mat, germCount);
-    auto report = sequentialVoronoi(mat, germs);
+    auto germs = germFactory.createRandomGerms(voronoi, germCount);
+    auto report = sequentialVoronoi(voronoi, germs);
+    Mat voronoiWithColorsApplied = Mat(voronoi.rows, voronoi.cols, CV_8UC3);
+    applyColorsOnVoronoi(voronoi, voronoiWithColorsApplied, germs);
 
     if (program["--preview-image"] == true) {
         namedWindow("result");
-        imshow("result", mat);
+        imshow("result", voronoiWithColorsApplied);
         waitKey(0);
     }
 
     if (program.present("--output")) {
-        imwrite(program.get<string>("--output"), mat);
+        imwrite(program.get<string>("--output"), voronoiWithColorsApplied);
     }
 
     cout << to_string(get<0>(report)) << " iterations in " << to_string(get<1>(report)) << "s";

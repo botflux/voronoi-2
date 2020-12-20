@@ -60,14 +60,14 @@ tuple<unsigned long, unsigned long> sequentialVoronoi (Mat & source, vector<Germ
 
     for (int i = 0; i < source.cols; ++i) {
         for (int j = 0; j < source.rows; ++j) {
-            source.at<Vec3b>(j, i) = Vec3b(0,0,0);
+            source.at<ushort>(j, i) = 0;
             iterationCount ++;
         }
     }
 
     for(auto & germ : germs) {
-        distances.at<short>(germ.getPoint()) = 0;
-        source.at<Vec3b>(germ.getPoint()) = germ.getColor();
+        distances.at<ushort>(germ.getPoint()) = 0;
+        source.at<ushort>(germ.getPoint()) = (ushort)germ.getId();
         iterationCount ++;
     }
 
@@ -86,7 +86,7 @@ tuple<unsigned long, unsigned long> sequentialVoronoi (Mat & source, vector<Germ
                     continue;
                 }
 
-                auto distanceInMask = distances.at<short> (absolutePoint);
+                auto distanceInMask = distances.at<ushort> (absolutePoint);
                 auto currentWeight = add(distanceInMask, get<1>(maskElement));
 
                 iterationCount ++;
@@ -97,8 +97,8 @@ tuple<unsigned long, unsigned long> sequentialVoronoi (Mat & source, vector<Germ
                 }
             }
 
-            source.at<Vec3b>(j, i) = source.at<Vec3b>(minFoundPoint);
-            distances.at<short>(j, i) = minFound;
+            source.at<ushort>(j, i) = source.at<ushort>(minFoundPoint);
+            distances.at<ushort>(j, i) = minFound;
         }
     }
 
@@ -116,7 +116,7 @@ tuple<unsigned long, unsigned long> sequentialVoronoi (Mat & source, vector<Germ
 
                 if (!isInMat(distances, absolutePoint)) continue;
 
-                auto weight = distances.at<short> (absolutePoint);
+                auto weight = distances.at<ushort> (absolutePoint);
                 auto currentWeight = add(weight, get<1>(maskElement));
 
                 ++iterationCount;
@@ -126,7 +126,7 @@ tuple<unsigned long, unsigned long> sequentialVoronoi (Mat & source, vector<Germ
                     minFoundPoint = absolutePoint;
                 }
             }
-            source.at<Vec3b> (j , i) = source.at<Vec3b> (minFoundPoint);
+            source.at<ushort> (j , i) = source.at<ushort> (minFoundPoint);
             distances.at<short> (j, i) = minFound;
         }
     }
