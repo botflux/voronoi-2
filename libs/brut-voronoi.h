@@ -31,6 +31,28 @@ public:
     }
 };
 
+class D1DistanceCalculator : public DistanceCalculator {
+public:
+    double getDistance (const Point & a, const Point & b) override {
+        double distanceX = abs(a.x - b.x);
+        double distanceY = abs(a.y - b.y);
+
+        return distanceX + distanceY;
+    }
+};
+
+class DInfinityCalculator : public DistanceCalculator {
+public:
+    double getDistance (const Point & a, const Point & b) override {
+        double distanceX = abs(a.x - b.x);
+        double distanceY = abs(a.y - b.y);
+
+        return distanceX > distanceY
+               ? distanceX
+               : distanceY;
+    }
+};
+
 class DiDistanceCalculator : public DistanceCalculator {
 public:
     double getDistance (const Point & a, const Point & b) override {
@@ -44,7 +66,7 @@ public:
     }
 };
 
-tuple<unsigned long, unsigned long> brutVoronoi (Mat & source, vector<Germ> germs, DistanceCalculator & distanceCalculator, map<int, vector<Point>> & regions) {
+tuple<unsigned long, unsigned long> brutVoronoi (Mat & source, vector<Germ> germs, DistanceCalculator * distanceCalculator, map<int, vector<Point>> & regions) {
     unsigned long iterationCount = 0;
     auto start = high_resolution_clock::now();
 
@@ -55,7 +77,7 @@ tuple<unsigned long, unsigned long> brutVoronoi (Mat & source, vector<Germ> germ
             Germ foundGerm(Vec3b(0,0,0), Point(-1, -1));
 
             for (auto & germ : germs) {
-                auto currentDistance = distanceCalculator.getDistance(germ.getPoint(), currentPoint);
+                auto currentDistance = distanceCalculator->getDistance(germ.getPoint(), currentPoint);
                 ++ iterationCount;
 
                 if (currentDistance <= lowestDistance) {

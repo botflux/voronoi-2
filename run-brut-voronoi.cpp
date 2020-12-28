@@ -34,6 +34,10 @@ int main(int argc, char * argv[]) {
         .default_value(false)
         .implicit_value(true);
 
+    program.add_argument("-d", "--distance-type")
+        .help("The type of distance you want to use (D1, DE, D∞")
+        .default_value("DE");
+
     try {
         program.parse_args(argc, argv);
     } catch (const runtime_error& err) {
@@ -45,13 +49,23 @@ int main(int argc, char * argv[]) {
     auto width = program.get<int>("--width");
     auto height = program.get<int>("--height");
     auto germCount = program.get<int>("--germs");
+    auto distanceType = program.get<string>("--distance-type");
+
+    map<string, DistanceCalculator*> distances;
+    DistanceCalculator * de = new DeDistanceCalculator();
+    DistanceCalculator * d1 = new DiDistanceCalculator();
+    DistanceCalculator * dInfinity = new DInfinityCalculator();
+
+    distances.insert({"DE", de});
+    distances.insert({"D1", d1});
+    distances.insert({"D∞", dInfinity});
 
     Mat voronoi (height, width, CV_16UC1);
     auto germFactory = GermFactory();
     auto germs = germFactory.createRandomGerms(voronoi, germCount);
 
-    auto distanceCalculator = DeDistanceCalculator();
     auto regions = map<int, vector<Point>> ();
+    DistanceCalculator * distanceCalculator = distances[distanceType];
     auto report = brutVoronoi(voronoi, germs, distanceCalculator, regions);
     Mat voronoiWithColorsApplied(voronoi.rows, voronoi.cols, CV_8UC3);
     applyColorsOnVoronoi(voronoi, voronoiWithColorsApplied, germs);
@@ -67,5 +81,10 @@ int main(int argc, char * argv[]) {
     }
 
     cout << to_string(get<0>(report)) << " iterations in " << to_string(get<1>(report)) << "s";
+
+    delete de;
+    delete d1;
+    delete dInfinity;
+
     return 0;
 }

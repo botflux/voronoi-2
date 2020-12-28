@@ -43,7 +43,7 @@ int main (int argc, char * argv []) {
     Mat voronoi(sourceImage.rows, sourceImage.cols, CV_16UC1);
     auto germFactory = GermFactory();
     auto germs = germFactory.createRandomGerms(voronoi, germCount);
-    DeDistanceCalculator distanceCalculator;
+    auto * distanceCalculator = new DeDistanceCalculator();
     map<int, vector<Point>> regions;
     brutVoronoi(voronoi, germs, distanceCalculator, regions);
     Mat outputImage(voronoi.rows, voronoi.cols, CV_8UC1);
@@ -61,5 +61,6 @@ int main (int argc, char * argv []) {
         imwrite(program.get<string>("--output"), outputImage);
     }
 
+    delete distanceCalculator;
     return 0;
 }
