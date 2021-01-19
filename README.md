@@ -1,5 +1,9 @@
 # Voronoi
 
+## Execution examples
+
+You can find execution examples [here](./execution-example).
+
 ## Compile project
 
 ```shell script

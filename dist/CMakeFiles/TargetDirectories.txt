@@ -1,0 +1,6 @@
+/Users/v-mendele/Documents/projects/voronoi-2/dist/CMakeFiles/rebuild_cache.dir
+/Users/v-mendele/Documents/projects/voronoi-2/dist/CMakeFiles/edit_cache.dir
+/Users/v-mendele/Documents/projects/voronoi-2/dist/CMakeFiles/BrutVoronoiApproximation.dir
+/Users/v-mendele/Documents/projects/voronoi-2/dist/CMakeFiles/SequentialVoronoi.dir
+/Users/v-mendele/Documents/projects/voronoi-2/dist/CMakeFiles/VoronoiAdaptatif.dir
+/Users/v-mendele/Documents/projects/voronoi-2/dist/CMakeFiles/BrutVoronoi.dir
